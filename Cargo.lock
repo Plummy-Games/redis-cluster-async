@@ -683,8 +683,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "redis_cluster_async"
-version = "0.7.1-alpha.1"
+name = "redis_cluster_async_tls_tokio"
+version = "0.8.0"
 dependencies = [
  "anyhow",
  "crc16",

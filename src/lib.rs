@@ -482,14 +482,16 @@ where
             .map(|info| async move {
                 let addr = match info.addr {
                     ConnectionAddr::Tcp(ref host, port) => match &info.redis.password {
-                        Some(pw) => format!("redis://:{}@{}:{}", pw, host, port),
-                        None => format!("redis://{}:{}", host, port),
+                        Some(pw) => format!("redis://:{pw}@{host}:{port}"),
+                        None => format!("redis://{host}:{port}"),
                     },
                     ConnectionAddr::TcpTls { ref host, port, insecure } => match &info.redis.password {
-                        Some(pw) if insecure => format!("rediss://:{}@{}:{}/#insecure", pw, host, port),
-                        Some(pw) => format!("rediss://:{}@{}:{}", pw, host, port),
-                        None if insecure => format!("rediss://{}:{}/#insecure", host, port),
-                        None => format!("rediss://{}:{}", host, port),
+                        Some(pw) if insecure => {
+                            format!("rediss://:{pw}@{host}:{port}/#insecure")
+                        }
+                        Some(pw) => format!("rediss://:{pw}@{host}:{port}"),
+                        None if insecure => format!("rediss://{host}:{port}/#insecure"),
+                        None => format!("rediss://{host}:{port}"),
                     },
                     _ => panic!("No reach."),
                 };
@@ -1001,6 +1003,7 @@ where
     T: IntoConnectionInfo + Send,
     C: ConnectionLike + Connect + Send + 'static,
 {
+    trace!("connect_and_check");
     let mut conn = C::connect(info).await?;
     check_connection(&mut conn).await?;
     Ok(conn)
@@ -1010,6 +1013,8 @@ async fn check_connection<C>(conn: &mut C) -> RedisResult<()>
 where
     C: ConnectionLike + Send + 'static,
 {
+    trace!("check_connection");
+
     let mut cmd = Cmd::new();
     cmd.arg("PING");
     cmd.query_async::<_, String>(conn).await?;

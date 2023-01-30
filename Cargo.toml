@@ -1,8 +1,7 @@
 [package]
-name = "redis_cluster_async"
-version = "0.7.1-alpha.1"
-authors = ["Markus Westerlind <marwes91@gmail.com>"]
-keywords = ["redis", "cluster", "database", "async"]
+name = "redis_cluster_async_tls_tokio"
+version = "0.8.0"
+keywords = ["redis", "cluster", "database", "async", "tokio"]
 description = "Async redis cluster driver for Rust."
 homepage = "https://github.com/Plummy-Games/redis-cluster-async.git"
 repository = "https://github.com/Plummy-Games/redis-cluster-async.git"
